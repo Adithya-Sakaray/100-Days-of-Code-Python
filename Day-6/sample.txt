@@ -1,0 +1,2 @@
+The day-6 of the python is done in website.
+I solved the maze of robot.
