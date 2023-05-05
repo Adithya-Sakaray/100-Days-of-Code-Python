@@ -1,6 +1,6 @@
 # 100 Days of Code with Python
 
-This is my personal 100 days of code challenge with Python, where I will be committing code daily for the next 100 days. I'll be sharing my progress and learnings on my [GitHub profile](https://github.com/yourusername).
+This is my personal 100 days of code challenge with Python, where I will be committing code daily for the next 100 days. I'll be sharing my progress and learnings on my [GitHub profile](https://github.com/Adithya-Sakaray/100-Days-of-Code-Python).
 
 ## Motivation
 
