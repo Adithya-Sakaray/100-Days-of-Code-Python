@@ -1,4 +1,5 @@
-import smtplib
+# for email
+import smtplib 
 import datetime as dt
 import random as rand
 
