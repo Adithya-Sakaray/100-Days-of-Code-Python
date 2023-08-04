@@ -25,7 +25,7 @@ with open("birthdays.csv", "r") as file:
     data = pandas.read_csv(file)
     data = pandas.DataFrame.to_dict(data, orient="records")
 
-for person in data:
+for person in data: 
     name = person["name"]
     to_email = person["email"]
     if person["month"] == now.month and person["day"] == now.day:
