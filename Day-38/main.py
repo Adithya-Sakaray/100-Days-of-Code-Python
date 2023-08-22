@@ -22,10 +22,10 @@ def get_minutes_calories(exercise_text):
 
     response = requests.post(exercise_endpoint, json=parameters, headers=headers)
     result = response.json()
-    minutes = result["exercises"][0]["duration_min"]
-    calories = result["exercises"][0]["nf_calories"]
-    exercise = str(result["exercises"][0]["name"]).capitalize()
-    return exercise, minutes, calories
+    minutes_local = result["exercises"][0]["duration_min"]
+    calories_local = result["exercises"][0]["nf_calories"]
+    exercise_local = str(result["exercises"][0]["name"]).capitalize()
+    return exercise_local, minutes_local, calories_local
 
 
 def get_details():
@@ -38,21 +38,22 @@ def get_details():
     result = response.json()
     print(result)
 
+
 def add_row():
     endpoint = "https://api.sheety.co/7dab9be838ede024177b121c807f8ec3/workoutTracking/workouts"
     header = {
-        "Authorization": "Basic YWRpdGh5YXNha2FyYXlAZ21haWwuY29tOlNvcGFkYTEyMw=="
+        "Authorization": os.environ.get("SHEETY_AUTH")
     }
-    data = {
+    json_data = {
         "workout": {
-                "date": date,
-                "time": time,
-                "exercise": exercise,
-                "duration": minutes,
-                "calories": calories,
-                }
+            "date": date,
+            "time": time,
+            "exercise": exercise,
+            "duration": minutes,
+            "calories": calories,
+        }
     }
-    result = requests.post(url=endpoint, json=data, headers=header)
+    result = requests.post(url=endpoint, json=json_data, headers=header)
     result.raise_for_status()
     print(result.json())
 
@@ -63,3 +64,4 @@ print(f"Exercise: {exercise}")
 print(f"Duration: {minutes} mins")
 print(f"Calories: {calories}")
 add_row()
+print("Row added successfully")
