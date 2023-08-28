@@ -52,8 +52,9 @@ class FlightSearch:
 
         response = requests.get(url=endpoint, headers=header, params=params)
         price = response.json()["data"][0]["price"]
+        token = response.json()["data"][0]["booking_token"]
         arrival_utc = parser.parse(str(response.json()["data"][0]["utc_arrival"])).replace(tzinfo=from_zone)
         departure_utc = parser.parse(response.json()["data"][0]["utc_departure"]).replace(tzinfo=from_zone)
         arrival_ist = arrival_utc.astimezone(to_zone).strftime("%d/%m/%Y  %H:%M")
         departure_ist = departure_utc.astimezone(to_zone).strftime("%d/%m/%Y  %H:%M")
-        return price, departure_ist, arrival_ist
+        return token, price, departure_ist, arrival_ist

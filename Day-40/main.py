@@ -1,7 +1,7 @@
 import data_manager
 import flight_search
 import notification_manager
-import  user_manager
+import user_manager
 
 gsheet_manager = data_manager.DataManager()
 flightManager = flight_search.FlightSearch()
@@ -38,11 +38,12 @@ def send_message():
         city_name = data["city"]
         to_city_code = data["iataCode"]
         my_price = data["lowestPrice"]
-        price, departure, arrival = flightManager.getPrice(to_city_code)
+        token, price, departure, arrival = flightManager.getPrice(to_city_code)
         if price < my_price:
-            # notificationManager.sendMessage(price, city_name, departure, arrival)
+            # notificationManager.sendMessage(token, price, city_name, departure, arrival)
+            notificationManager.printMessage(token, price, city_name, departure, arrival)
             for email in all_email:
-                notificationManager.sendMail(price, city_name, departure, arrival, email)
+                notificationManager.sendMail(token, price, city_name, departure, arrival, email)
 
 
 userManager.get_user_details_from_user()
