@@ -34,6 +34,7 @@ def send_message():
         email = user["email"]
         all_email.append(email)
 
+
     for data in flight_sheet:
         city_name = data["city"]
         to_city_code = data["iataCode"]
@@ -46,7 +47,7 @@ def send_message():
                 notificationManager.sendMail(token, price, city_name, departure, arrival, email)
 
 
-userManager.get_user_details_from_user()
+# userManager.get_user_details_from_user()
 populate_codes()
 send_message()
 
