@@ -1,0 +1,35 @@
+body{
+    text-align: center;
+    margin:0;
+}
+
+h1{
+    color:#a27b5c;
+    margin-top: 0;
+    font-size: 100px;
+}
+
+h2{
+    color:#a27b5c;
+    margin:0;
+    font-size: 30px;
+}
+
+p{
+    margin: 0;
+    font-size: 20px;
+}
+  
+div{
+    background-color:rgba(208, 193, 117, 0.968);
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+#con-1{
+    background-color:rgba(16, 93, 93, 0.968);
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+
