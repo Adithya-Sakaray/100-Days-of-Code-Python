@@ -1,5 +1,5 @@
 import smtplib
-
+from article_data import all_posts
 from flask import Flask
 from flask import render_template, request
 import requests
@@ -11,10 +11,6 @@ OWN_PASSWORD = "aezdyhxnjfqphruj"
 
 @app.route("/")
 def home_page():
-    url = "https://api.npoint.io/eb6cd8a5d783f501ee7d"
-    response = requests.get(url=url)
-    all_posts = response.json()
-
     return render_template("index.html", posts=all_posts, num_posts=len(all_posts))
 
 
@@ -25,10 +21,8 @@ def about_page():
 
 @app.route("/posts/<int:id>")
 def post_page(id):
-    blog_url = "https://api.npoint.io/eb6cd8a5d783f501ee7d"
-    response = requests.get(url=blog_url)
-    post = response.json()[id - 1]
-    image = post['image_url']
+    post = all_posts[id - 1]
+    image = "https://images.unsplash.com/photo-1542435503-956c469947f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
     return render_template("post.html", post=post, image=image)
 
 
@@ -40,6 +34,24 @@ def contact_page():
         return render_template("contact_success.html")
     else:
         return render_template("contact.html", msg_sent=False)
+
+
+@app.route("/add", methods=["GET", "POST"])
+def add_page():
+    if request.method == "POST":
+        data = request.form
+        send = {
+            "id": len(all_posts)+1,
+            "body": data["body"],
+            "date": data["date"],
+            "title": data["title"],
+            "author": data["author"],
+            "subtitle": data["subtitle"]
+        }
+        all_posts.append(send)
+        print(send)
+        return render_template("thankyou.html")
+    return render_template("add.html")
 
 
 def send_email(name, email, phone, message):
