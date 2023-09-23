@@ -17,16 +17,18 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///movies.db"
 db.init_app(app)
 
 
-class Movies(db.Model):
+class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String, unique=True, nullable=False)
+    title = db.Column(db.String(250), unique=True, nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.String, nullable=False)
-    rating = db.Column(db.Float, nullable=False)
-    ranking = db.Column(db.Integer, nullable=False)
-    review = db.Column(db.String, nullable=False)
-    img_url = db.Column(db.String, nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    rating = db.Column(db.Float, nullable=True)
+    ranking = db.Column(db.Integer, nullable=True)
+    review = db.Column(db.String(250), nullable=True)
+    img_url = db.Column(db.String(250), nullable=False)
 
+with app.app_context():
+    db.create_all()
 
 class RateMovieForm(FlaskForm):
     rating = FloatField("Your Rating Out of 10 e.g. 7.5")
@@ -41,7 +43,7 @@ class AddMovieForm(FlaskForm):
 
 @app.route("/")
 def home():
-    result = db.session.execute(db.select(Movies).order_by(Movies.rating))
+    result = db.session.execute(db.select(Movie).order_by(Movie.rating))
     all_movies = result.scalars().all()  # convert ScalarResult to Python List
 
     for i in range(len(all_movies)):
@@ -54,31 +56,19 @@ def home():
 def update():
     form = RateMovieForm()
     movie_id = request.args.get("id")
-    movie_id = request.args.get("id")
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}"
-    response = requests.get(url=url)
-    data = response.json()
+    movie = db.get_or_404(Movie, movie_id)
     if form.validate_on_submit():
-        movie = Movies(
-            id=data["id"],
-            title=data["title"],
-            year=data["release_date"][:4],
-            description=data["overview"],
-            rating=form.rating.data,
-            ranking=1,
-            review=form.review.data,
-            img_url=f"https://image.tmdb.org/t/p/w500{data['backdrop_path']}"
-        )
-        db.session.add(movie)
+        movie.rating = float(form.rating.data)
+        movie.review = form.review.data
         db.session.commit()
-        return redirect(url_for("home"))
-    return render_template("edit.html", movie=data, form=form)
+        return redirect(url_for('home'))
+    return render_template("edit.html", movie=movie, form=form)
 
 
 @app.route("/delete")
 def delete():
     movie_id = request.args.get("id")
-    movie = db.session.get(Movies, movie_id)
+    movie = db.session.get(Movie, movie_id)
     db.session.delete(movie)
     db.session.commit()
 
@@ -105,9 +95,26 @@ def select():
     response = response.json()
 
     all_movies = response["results"]
-    print(all_movies)
 
     return render_template("select.html", movies=all_movies)
+
+@app.route("/find")
+def find():
+    movie_id = request.args.get("id")
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}"
+    response = requests.get(url=url)
+    data = response.json()
+    movie = Movie(
+        id=data["id"],
+        title=data["title"],
+        year=data["release_date"][:4],
+        description=data["overview"],
+        img_url=f"https://image.tmdb.org/t/p/w500{data['backdrop_path']}"
+    )
+    db.session.add(movie)
+    db.session.commit()
+
+    return redirect(url_for("update", id=movie_id))
 
 
 if __name__ == '__main__':

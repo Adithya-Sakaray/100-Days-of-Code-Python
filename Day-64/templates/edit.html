@@ -7,6 +7,8 @@
 <div class="content">
   <h1 class="heading">{{movie['title']}}</h1>
     <p class="description">Edit Movie Rating</p>
+        <img src="{{ movie['img_url'] }}">
+
         {{ render_form(form, novalidate=True) }}
   </div>
 {% endblock %}
