@@ -3,18 +3,7 @@ import random
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
-'''
-Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
 
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
 
 app = Flask(__name__)
 
@@ -133,11 +122,36 @@ def post_new_cafe():
     db.session.commit()
     return jsonify(response={"success": "Successfully added the new cafe."})
 
-## HTTP POST - Create Record
 
-## HTTP PUT/PATCH - Update Record
+@app.route("/update-price/<int:id>")
+def update_price(id):
+    new_price = request.args.get("new_price")
+    cafe = db.session.get(Cafe, id)
+    if cafe:
+        cafe.coffee_price = new_price
+        db.session.commit()
+        return jsonify(response={"success": "Successfully updated the price."})
+    else:
+        return jsonify(response={"failure": "No cafe found with the given id."})
 
-## HTTP DELETE - Delete Record
+
+
+@app.route("/report-closed/<int:id>")
+def report_closed(id):
+    api_key = request.args.get("api-key")
+
+    if api_key == "TopSecretApiKey":
+        cafe = db.session.get(Cafe, id)
+        if cafe:
+            db.session.delete(cafe)
+            db.session.commit()
+            return jsonify(response={"success": "The mentioned cafe is deleted from the database."})
+        else:
+            return jsonify(response={"failure": "No cafe found with the given id."})
+
+    else:
+        return jsonify(response={"failure": "You dont have permission to do that, please check the api key"})
+
 
 
 if __name__ == '__main__':
