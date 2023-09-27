@@ -59,7 +59,7 @@ def send_email(name, email, phone, message):
     with smtplib.SMTP("smtp.gmail.com") as connection:
         connection.starttls()
         connection.login(OWN_EMAIL, OWN_PASSWORD)
-        connection.sendmail(from_addr=OWN_EMAIL, to_addrs=email, msg=email_message)
+        connection.sendmail(from_addr=OWN_EMAIL, to_addrs="adithyasakaray@gmail.com", msg=email_message)
 
 
 if __name__ == "__main__":
