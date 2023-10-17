@@ -90,7 +90,9 @@ start_button.grid(row=2, column=1)
 reset_button = Button(text="Reset", command=timer_reset)
 reset_button.grid(row=2, column=3)
 
-tick_mark = Label(text="", font=(FONT_NAME, 20, "bold"), fg=GREEN, bg=YELLOW)
+tick_mark = Label(text="", font=(FONT_NAME, 20), fg=GREEN, bg=YELLOW)
 tick_mark.grid(row=3, column=2)
+
+
 
 window.mainloop()
