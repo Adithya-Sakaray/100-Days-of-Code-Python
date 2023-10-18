@@ -3,8 +3,6 @@ import random
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
-
-
 app = Flask(__name__)
 
 ##Connect to Database
@@ -50,7 +48,7 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template("index.html")
-    
+
 
 ## HTTP GET - Read Record
 @app.route("/random")
@@ -60,7 +58,7 @@ def get_random_cafe():
 
     return jsonify(
         cafe={
-            "id":random_cafe.id,
+            "id": random_cafe.id,
             "name": random_cafe.name,
             "map_url": random_cafe.map_url,
             "img_url": random_cafe.img_url,
@@ -83,6 +81,8 @@ def get_all_cafe():
     list_of_cafes = []
     for cafes in all_cafes:
         list_of_cafes.append(cafes.to_dict())
+
+    print(list_of_cafes)
     return jsonify(cafes=list_of_cafes)
 
 
@@ -101,7 +101,6 @@ def search():
                 "Not found": "Sorry we don't have a cafe at that location"
             }
         )
-
 
 
 @app.route("/add", methods=["POST", "GET"])
@@ -135,8 +134,7 @@ def update_price(id):
         return jsonify(response={"failure": "No cafe found with the given id."})
 
 
-
-@app.route("/report-closed/<int:id>")
+1@app.route("/report-closed/<int:id>")
 def report_closed(id):
     api_key = request.args.get("api-key")
 
@@ -151,7 +149,6 @@ def report_closed(id):
 
     else:
         return jsonify(response={"failure": "You dont have permission to do that, please check the api key"})
-
 
 
 if __name__ == '__main__':

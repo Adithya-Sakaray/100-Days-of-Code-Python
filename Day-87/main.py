@@ -5,6 +5,11 @@ from blocks import BlocksManager
 from scoreboard import Scoreboard
 import time
 
+'''
+
+This is only the main file to view the whole project please visit https://github.com/Adithya-Sakaray/100-Days-of-Code-Python/tree/main/Day-87
+'''
+
 
 GAME_SPEED = 0.05
 ball = Ball()
