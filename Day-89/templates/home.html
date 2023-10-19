@@ -1,0 +1,27 @@
+{% include "header.html" %}
+
+<div class="container text-center ">
+
+
+    {% if False %}
+        <img src="/static/Images/error.svg" height="300" width="300" alt="error"/>
+        <h4>
+            Add some tasks to view them here
+        </h4>
+    {% else %}
+        <div class="list-group">
+            <label class="list-group-item d-flex gap-3">
+                <input class="form-check-input flex-shrink-0" type="checkbox" value="" checked=""
+                       style="font-size: 1.375em;">
+                <span class="pt-1 form-checked-content">
+                    <strong>Finish sales report</strong>
+                    <small class="d-block text-body-secondary">
+                        1:00–2:00pm
+                    </small>
+                </span>
+            </label>
+        </div>
+    {% endif %}
+</div>
+
+{% include "footer.html" %}

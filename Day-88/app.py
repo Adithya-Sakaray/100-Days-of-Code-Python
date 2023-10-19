@@ -69,7 +69,6 @@ def home():
     for cafes in all_cafes:
         list_of_cafes.append(cafes.to_dict())
 
-    print(list_of_cafes)
     return render_template("home.html", list_of_cafes=list_of_cafes)
 
 
@@ -96,4 +95,4 @@ def add():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")
