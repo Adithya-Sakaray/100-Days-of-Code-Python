@@ -8,10 +8,11 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = 'XXXXXXXXXXXXXXXX'
 db = SQLAlchemy()
 db.init_app(app)
 bootstrap = Bootstrap5(app)
+
 
 class TaskForm(FlaskForm):
     task_name = StringField("Task", validators=[InputRequired()])
@@ -29,7 +30,8 @@ class Tasks(db.Model):
 with app.app_context():
     db.create_all()
 
-@app.route('/', methods= ["POST", "GET"])
+
+@app.route('/', methods=["POST", "GET"])
 def home():
     if request.method == "POST":
         req_id = request.args.get("id")
