@@ -1,26 +1,38 @@
 {% include "header.html" %}
 
-<div class="container text-center ">
+<div class="container">
 
 
-    {% if False %}
-        <img src="/static/Images/error.svg" height="300" width="300" alt="error"/>
-        <h4>
-            Add some tasks to view them here
+    {% if not tasks %}
+        <div class="text-center">
+            <img src="/static/Images/party.svg" height="300" width="300" alt="error"/>
+        </div>
+
+        <h4 class="text-center">
+            Yaay you have no tasks pending!!
         </h4>
     {% else %}
-        <div class="list-group">
-            <label class="list-group-item d-flex gap-3">
-                <input class="form-check-input flex-shrink-0" type="checkbox" value="" checked=""
-                       style="font-size: 1.375em;">
-                <span class="pt-1 form-checked-content">
-                    <strong>Finish sales report</strong>
-                    <small class="d-block text-body-secondary">
-                        1:00–2:00pm
-                    </small>
-                </span>
-            </label>
-        </div>
+        <h3>
+            Tasks pending
+        </h3>
+        {% for task in tasks %}
+            <div class="list-group">
+                <form action="{{ url_for("home", id=task['id']) }}" method="POST">  <!-- Replace with your actual endpoint -->
+                    <label class="list-group-item d-flex gap-3">
+                        <button type="submit" class="btn btn-primary">
+                            ✓
+                        </button>
+                        <span class="pt-1 form-checked-content">
+                <strong style="color: {% if today_date > task.due_date %}red{% else %}black{% endif %};">{{ task.task_name }}</strong>
+                <small class="d-block text-body-secondary"
+                       >
+                    Due: {{ task.due_date.strftime("%d-%m-%Y") }}
+                </small>
+            </span>
+                    </label>
+                </form>
+            </div>
+        {% endfor %}
     {% endif %}
 </div>
 
