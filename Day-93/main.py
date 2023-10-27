@@ -22,7 +22,7 @@ all_books_list.append([
 
 for i, item in enumerate(titles):
 
-    if i >= 2:
+    if 2 <= i:
         div = item.find(name="div", class_="bc-row-responsive")
         another_div = div.find(name="div", class_="bc-col-responsive")
         span = another_div.find(name="span")
@@ -30,29 +30,35 @@ for i, item in enumerate(titles):
         all_info = ul.find_all(name="li", class_="bc-list-item")
         book = []
         for i, info in enumerate(all_info):
+            text = ""
             text = info.getText()
             text = ' '.join(text.split())
             if i == 0:
                 book.append(text)
             elif i == 1:
-                book.append(text[12:])
+                l = " ".join(text.split()[2:])
+                book.append(l)
             elif i == 2:
-                book.append(text[13:])
+                new_text = " ".join(text.split()[2:])
+                book.append(new_text)
             elif i == 3:
-                book.append(text[8:])
+                new_text = " ".join(text.split()[1:])
+                book.append(new_text)
             elif i == 4:
-                book.append(text[14:])
+                new_text = " ".join(text.split()[2:])
+                book.append(new_text)
             elif i == 5:
-                book.append(text[10:])
+                new_text = " ".join(text.split()[1:])
+                book.append(new_text)
             else:
                 book.append(text.split()[0])
 
         all_books_list.append(book)
 
-# for item in all_books_list:
-#     print(item)
+for item in all_books_list:
+    print(item)
 
-with open('my_data.csv', 'w', newline="") as csv_file:
+with open('books.csv', 'w', newline="") as csv_file:
     csv_writer = csv.writer(csv_file)
     for item in all_books_list:
         csv_writer.writerow(item)
