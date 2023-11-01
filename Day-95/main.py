@@ -63,8 +63,8 @@ while game_is_on:
         enemy.create_enemies()
 
     # random shooting
-    num = random.randint(0, 10)
-    if num == 0:
+    num = random.randint(0, 5)
+    if num == 1:
         rand_enemy = random.choice(enemy.enemies)
         rand_enemy_x = rand_enemy.xcor()
         rand_enemy_y = rand_enemy.ycor()
@@ -72,7 +72,7 @@ while game_is_on:
 
     # if enemy laser strikes the player
     for item in laser_enemy.lasers:
-        if item.distance(player) < 10:
+        if item.distance(player) < 20:
             scoreboard.game_over()
             game_is_on = False
 
