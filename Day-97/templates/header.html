@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+</head>
+<body>
+<header class="p-3 text-bg-dark ">
+    <div class="container ">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <h2 class="mx-3"><a href="{{ url_for('home') }}" class="nav-link px-2 text-white">Shop-Sphere</a></h2>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="{{ url_for('products') }}" class="nav-link px-2 text-white">Products</a></li>
+                <li><a href="{{ url_for('cart') }}" class="nav-link px-2 text-white">Cart</a></li>
+                <li><a href="{{ url_for("about") }}" class="nav-link px-2 text-white">About</a></li>
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
+
+            <div class="text-end">
+                <a href="{{ url_for('login') }}"><button type="button" class="btn btn-light me-2">Login</button></a>
+                <a href="{{ url_for('register') }}"><button type="button" class="btn btn-light">Register</button></a>
+            </div>
+        </div>
+    </div>
+</header>
