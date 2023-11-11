@@ -1,7 +1,7 @@
 {% include "header.html" %}
 
 <div class="px-4 py-5 my-5 text-center border-bottom">
-    <img class="d-block mx-auto mb-4" src="../static/Images/logo.png" alt="Company logo" width="300" height="250"
+    <img class="d-block mx-auto mb-4" src="../static/Images/logo.png" alt="Company logo" width="300" height="260"
          style="border-radius:10px;">
     <h1 class="display-5 fw-bold text-body-emphasis"></h1>
     <div class="col-lg-6 mx-auto">
@@ -11,20 +11,21 @@
     </div>
 </div>
 
+<div class="container">
+    <h2>Our top-selling products</h2>
+
 
 {% for item in products %}
-    <div class="card shadow-0 border rounded-3 m-3">
+    <div class="card shadow-0 border rounded-3 my-3">
         <div class="card-body">
             <div class="row g-0">
                 <div class="col-xl-3 col-md-4 d-flex justify-content-center">
                     <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                        <img src="{{ item.img_url }}"
+                        <img src="{{ item.img_url }}" alt="product-image"
                              style="border-radius:10px; height:175px">
-                        <a href="#!">
                             <div class="hover-overlay">
                                 <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                             </div>
-                        </a>
                     </div>
                 </div>
                 <div class="col-xl-7 col-md-5 col-sm-7 px-2">
@@ -46,12 +47,14 @@
                     </div>
                     <h6 class="text-success">Free shipping</h6>
                     <div class="mt-4">
-                        <button class="btn btn-primary shadow-0" type="button">Add to cart</button>
+                        <a href="{{ url_for('add_to_cart', user_id=current_user.id, product_id=item.id) }}"><button class="btn btn-primary shadow-0" type="button">Add to cart</button></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 {% endfor %}
+
+</div>
 
 {% include "footer.html" %}

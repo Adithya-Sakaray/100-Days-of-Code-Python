@@ -33,6 +33,18 @@ def admin_only(f):
 
     return decorated_function
 
+def only_authenticated(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # If id is not 1 then return abort with 403 error
+        if not current_user.is_authenticated:
+            return abort(403)
+        # Otherwise continue with the route function
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 
 # table definitions
 class User(UserMixin, db.Model):
@@ -50,6 +62,15 @@ class Products(db.Model):
     price = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(400), nullable=False)
+
+
+class Cart(db.Model):
+    __tablename__ = "carts"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    is_sold = db.Column(db.Boolean, nullable=False)
 
 
 with app.app_context():
@@ -119,6 +140,7 @@ def register():
 
 
 @app.route("/logout")
+@only_authenticated
 def logout():
     logout_user()
     return redirect(url_for("home"))
@@ -140,8 +162,7 @@ def home():
 
         return render_template("search.html", query=search_query, results=search_results)
 
-
-    return render_template("home.html", current_user=current_user, products=products_list)
+    return render_template("home.html", products=products_list)
 
 
 @app.route("/about")
@@ -149,9 +170,100 @@ def about():
     return render_template("about.html", current_user=current_user)
 
 
+@app.route("/add_cart")
+def add_to_cart():
+    user_id = request.args.get("user_id")
+    product_id = request.args.get("product_id")
+
+    cart_item = Cart.query.filter_by(user_id=user_id, product_id=product_id, is_sold=False).first()
+
+    if cart_item:
+        # If the cart item already exists, update the quantity
+        cart_item.quantity = (cart_item.quantity + 1)
+        db.session.commit()
+    else:
+        # If the cart item doesn't exist, create a new one
+        cart_item = Cart(
+            user_id=user_id,
+            product_id=product_id,
+            quantity=1,
+            is_sold=False
+        )
+
+        db.session.add(cart_item)
+        db.session.commit()
+
+    return redirect(url_for("cart"))
+
+@app.route("/remove_cart")
+@only_authenticated
+def remove_from_cart():
+    cart_id = request.args.get("cart_id")
+
+    cart_item = Cart.query.get(cart_id)
+
+    if cart_item:
+        db.session.delete(cart_item)
+        db.session.commit()
+
+    return redirect(url_for("cart"))
+
+
+@app.route("/buy")
+@only_authenticated
+def buy():
+    cart_id_param = request.args.get("cart_ids")
+    cart_ids = cart_id_param.split(",")
+    cart_ids.pop(-1)
+
+    for cart_id in cart_ids:
+        cart_item = Cart.query.get(int(cart_id))
+
+        if cart_item:
+            cart_item.is_sold = True
+            db.session.commit()
+
+    return redirect(url_for("cart"))
+
+
 @app.route("/cart")
 def cart():
-    return render_template("cart.html", current_user=current_user)
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        user_cart = Cart.query.filter_by(user_id=user_id, is_sold=False).all()
+
+        # Retrieve product details for each item in the cart
+        cart_items = []
+        total_price = 0
+
+        for item in user_cart:
+            product = Products.query.get(item.product_id)
+            quantity = item.quantity
+            subtotal = quantity * product.price
+            total_price += subtotal
+
+            cart_items.append({
+                'product_name': product.product_name,
+                'product_desc': product.description,
+                'price': product.price,
+                'quantity': quantity,
+                'subtotal': subtotal,
+                'img_url': product.img_url,
+                'id': item.id
+            })
+
+        cart_ids = [x["id"] for x in cart_items]
+        cart_str = ""
+        for id in cart_ids:
+            cart_str += str(id)
+            cart_str += ","
+
+    else:
+        cart_items = []
+        total_price = 0
+        cart_str = ""
+
+    return render_template("cart.html", current_user=current_user, cart_items=cart_items, total_price=total_price, ids=cart_str)
 
 
 @app.route("/products")
@@ -208,9 +320,38 @@ def search():
 
 
 @app.route("/user")
+@only_authenticated
 def user():
-    return render_template("user.html", current_user=current_user)
+
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        user_cart = Cart.query.filter_by(user_id=user_id, is_sold=True).all()
+
+        # Retrieve product details for each item in the cart
+        order_items = []
+        total_price = 0
+
+        for item in user_cart:
+            product = Products.query.get(item.product_id)
+            quantity = item.quantity
+            subtotal = quantity * product.price
+            total_price += subtotal
+
+            order_items.append({
+                'product_name': product.product_name,
+                'product_desc': product.description,
+                'price': product.price,
+                'quantity': quantity,
+                'subtotal': subtotal,
+                'img_url': product.img_url,
+                'id': item.id
+            })
+
+    else:
+        order_items = []
+        total_price = 0
+    return render_template("user.html", current_user=current_user, orders=order_items)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

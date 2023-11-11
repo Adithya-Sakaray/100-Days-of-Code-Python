@@ -10,6 +10,61 @@
         <h3>Email: {{ current_user.email }}</h3>
     </div>
 
+
+    <h3 class="my-3">Orders:</h3>
+    {% if orders %}
+        {% for item in orders %}
+            <div class="card shadow-0 border rounded-3 my-3">
+                <div class="card-body">
+                    <div class="row g-0">
+                        <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                            <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                <img src="{{ item.img_url }}" alt="product-image"
+                                     style="border-radius:10px; height:175px">
+                                <div class="hover-overlay">
+                                    <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-7 col-md-5 col-sm-7 px-2">
+                            <h5>{{ item.product_name }}</h5>
+                            <div class="d-flex flex-row">
+                                <div class="text-warning mb-1 me-2">
+                            <span class="ms-1">
+                            </span>
+                                </div>
+                            </div>
+
+                            <p class="text mb-4 mb-md-0">
+                                {{ item.product_desc|safe }}
+                            </p>
+                            <h4>Subtotal: {{ item.subtotal }}</h4>
+                        </div>
+                        <div class="col-xl-2 col-md-3 col-sm-5">
+                            <div class="d-flex flex-row align-items-center mb-1">
+                                <h4 class="mb-1 me-1">₹ {{ item.price }}</h4>
+                            </div>
+                            <h6 class="text-warning">Quantity: {{ item.quantity }}</h6>
+                            <h6 class="text-success">Delivered Successfully</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+         <div class="text-center" style="min-height:70vh;">
+            <br>
+            <br>
+            <br>
+            <img src="../static/Images/cart.svg" alt="Cart Icon" height="200" class="m-10">
+            <br>
+            <br>
+            <br>
+            <br>
+            <h6>Oops no orders, shop from our store to view your orders!</h6>
+         </div>
+    {% endif %}
+
 </div>
 
 </body>
