@@ -33,6 +33,7 @@ def admin_only(f):
 
     return decorated_function
 
+
 def only_authenticated(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -43,7 +44,6 @@ def only_authenticated(f):
         return f(*args, **kwargs)
 
     return decorated_function
-
 
 
 # table definitions
@@ -90,17 +90,17 @@ def login():
         password = form.password.data
         result = db.session.execute(db.select(User).where(User.email == form.email.data))
         # Note, email in db is unique so will only have one result.
-        user = result.scalar()
+        log_user = result.scalar()
         # Email doesn't exist
-        if not user:
+        if not log_user:
             flash("That email does not exist, please try again.")
             return redirect(url_for('login'))
         # Password incorrect
-        elif not check_password_hash(user.password, password):
+        elif not check_password_hash(log_user.password, password):
             flash('Password incorrect, please try again.')
             return redirect(url_for('login'))
         else:
-            login_user(user)
+            login_user(log_user)
             return redirect(url_for('home'))
 
     return render_template("login.html", form=form)
@@ -112,8 +112,8 @@ def register():
     if form.validate_on_submit():
         # Check if user email is already present in the database.
         result = db.session.execute(db.select(User).where(User.email == form.email.data))
-        user = result.scalar()
-        if user:
+        reg_user = result.scalar()
+        if reg_user:
             # User already exists
             flash("You've already signed up with that email, log in instead!")
             return redirect(url_for('login'))
@@ -195,6 +195,7 @@ def add_to_cart():
 
     return redirect(url_for("cart"))
 
+
 @app.route("/remove_cart")
 @only_authenticated
 def remove_from_cart():
@@ -263,7 +264,8 @@ def cart():
         total_price = 0
         cart_str = ""
 
-    return render_template("cart.html", current_user=current_user, cart_items=cart_items, total_price=total_price, ids=cart_str)
+    return render_template("cart.html", current_user=current_user, cart_items=cart_items, total_price=total_price,
+                           ids=cart_str)
 
 
 @app.route("/products")
@@ -322,7 +324,6 @@ def search():
 @app.route("/user")
 @only_authenticated
 def user():
-
     if current_user.is_authenticated:
         user_id = current_user.id
         user_cart = Cart.query.filter_by(user_id=user_id, is_sold=True).all()
